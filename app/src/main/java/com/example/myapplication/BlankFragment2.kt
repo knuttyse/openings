@@ -23,7 +23,9 @@ class BlankFragment2 : Fragment() {
         _binding = FragmentBlank2Binding.inflate(inflater, container, false)
         val view = binding.root
 
-        binding.blank2FragmentText.setOnClickListener(::navigateBack)
+        //binding.chessboard
+
+        //binding..setOnClickListener(::navigateBack)
 
         return view
 
