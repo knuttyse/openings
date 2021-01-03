@@ -75,4 +75,6 @@ dependencies {
     // UI Tests
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.0-alpha08'
 
+    // chess:
+    implementation 'com.github.bhlangonijr:chesslib:1.2.5'
 }
