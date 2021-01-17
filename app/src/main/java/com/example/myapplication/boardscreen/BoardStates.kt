@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.boardscreen
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Piece
