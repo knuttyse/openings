@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/blankFragment2"
-        android:name="com.example.myapplication.BlankFragment2"
+        android:name="com.example.myapplication.BoardFragment"
         android:label="fragment_blank2"
         tools:layout="@layout/fragment_blank2" >
         <action
