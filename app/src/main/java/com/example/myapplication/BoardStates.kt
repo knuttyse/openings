@@ -67,6 +67,10 @@ sealed class AbstractBoardState(val board: Board, val correctMove: Move) {
         board.legalMoves()
     }
 
+    val boardAfterCorrectMove by lazy {
+       doMove(board, correctMove)
+    }
+
     class BaseBoardState(board: Board, correctMove: Move) :
         AbstractBoardState(board, correctMove)
 

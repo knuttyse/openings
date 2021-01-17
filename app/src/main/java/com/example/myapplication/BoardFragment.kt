@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.vectorResource
 import androidx.fragment.app.Fragment
@@ -101,22 +100,12 @@ val squareColors: Map<Square, Color> = mutableMapOf<Square, Color>().apply {
             val r = s.ordinal / 8
             val color =
                 if (f.rem(2) == r.rem(2))
-                    Color.White
-                else Color.LightGray
+                    Color.LightGray
+                else Color.White
             this[s] = color
         }
     }
 }.toMap()
-
-
-/*val Square.color: Color
-    get() = when (this) {
-        Square.NONE -> Color.White
-        else -> {
-            val f = this.file
-            val r = this.rank
-        }
-    }*/
 
 class BoardFragment : BoardHandlers, Fragment() {
 
@@ -171,10 +160,31 @@ fun BoardScreen(viewModel: BoardViewModel, handlers: BoardHandlers) {
 
 @Composable
 private fun BoardView(state: AbstractBoardState, handlers: BoardHandlers) {
-    val rotation = when (state.board.sideToMove) {
+    val board = state.board
+    val rotation = when (board.sideToMove) {
         Side.WHITE -> 0f
         else -> 180f
     }
+
+    val isCorrect = state is AbstractBoardState.CorrectMoveState
+    val isIncorrect = state is AbstractBoardState.IncorrectMoveState
+    val isCorrectOrIncorrect = isCorrect or isIncorrect
+    val boardToDraw =
+        if (isCorrectOrIncorrect) state.boardAfterCorrectMove
+        else board
+    val incorrectMove: Move? =
+        if (state is AbstractBoardState.IncorrectMoveState)
+            state.incorrectMove
+        else null
+
+    val incorrectSquares: Set<Square> = incorrectMove?.run {
+        setOf(from, to)
+    }.orEmpty()
+
+    val correctSquares: Set<Square> = state.correctMove.run {
+        setOf(from, to)
+    }
+
     Column(modifier = Modifier.rotate(rotation)) {
         rows.forEach { squares ->
 
@@ -182,16 +192,20 @@ private fun BoardView(state: AbstractBoardState, handlers: BoardHandlers) {
 
                 squares.forEach { square ->
 
+                    val defaultColor = squareColors.getValue(square)
+                    val isSquareCorrect = isCorrectOrIncorrect && square in correctSquares
+                    val background = if (isSquareCorrect) Color.Green else defaultColor
+
                     Box(
                         modifier = Modifier
-                            .background(squareColors.getValue(square))
+                            .background(background)
                             .weight(1f)
                             .aspectRatio(1f)
                             .clickable(onClick = {
                                 handlers.touchSquare(square)
                             })
                     ) {
-                        val pieceDrawable = state.board.getPiece(square).drawable
+                        val pieceDrawable = boardToDraw.getPiece(square).drawable
                         Image(
                             vectorResource(id = pieceDrawable),
                             modifier = Modifier.align(Alignment.Center).fillMaxSize()
