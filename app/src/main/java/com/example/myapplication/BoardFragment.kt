@@ -171,38 +171,33 @@ fun BoardScreen(viewModel: BoardViewModel, handlers: BoardHandlers) {
 
 @Composable
 private fun BoardView(state: AbstractBoardState, handlers: BoardHandlers) {
-    //val rankRange = 0..7
-    //val columnRange = 0..7
-    WithConstraints(Modifier.fillMaxHeight().fillMaxWidth()) {
+    val rotation = when (state.board.sideToMove) {
+        Side.WHITE -> 0f
+        else -> 180f
+    }
+    Column(modifier = Modifier.rotate(rotation)) {
+        rows.forEach { squares ->
 
-        val rotation = when (state.board.sideToMove) {
-            Side.WHITE -> 0f
-            else -> 180f
-        }
-        Column(modifier = Modifier.rotate(rotation)) {
-            rows.forEach { squares ->
+            Row {
 
-                Row {
+                squares.forEach { square ->
 
-                    squares.forEach { square ->
-
-                        Box(
-                            modifier = Modifier
-                                .background(squareColors.getValue(square))
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .clickable(onClick = {
-                                    handlers.touchSquare(square)
-                                })
-                        ) {
-                            val pieceDrawable = state.board.getPiece(square).drawable
-                            Image(
-                                vectorResource(id = pieceDrawable),
-                                modifier = Modifier.align(Alignment.Center).fillMaxSize()
-                            )
-                        }
-
+                    Box(
+                        modifier = Modifier
+                            .background(squareColors.getValue(square))
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .clickable(onClick = {
+                                handlers.touchSquare(square)
+                            })
+                    ) {
+                        val pieceDrawable = state.board.getPiece(square).drawable
+                        Image(
+                            vectorResource(id = pieceDrawable),
+                            modifier = Modifier.align(Alignment.Center).fillMaxSize()
+                        )
                     }
+
                 }
             }
         }
